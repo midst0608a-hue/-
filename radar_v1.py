@@ -199,9 +199,12 @@ def save_kline_robust(code):
     """嘗試 .TW 與 .TWO 抓取 K 線 (含 MACD)，並相容新版 yfinance"""
     if not code: return None
     
-    # 【關鍵修正】把暫存圖片存到絕對安全的 C:\Temp 裡，避開 OneDrive 干擾
+    # 【跨平台修正】判斷作業系統，決定暫存資料夾路徑
     import os
-    temp_dir = r"C:\Temp\籌碼雷達暫存圖"
+    if os.name == 'nt':  # Windows
+        temp_dir = r"C:\Temp\籌碼雷達暫存圖"
+    else:  # Mac / Linux
+        temp_dir = os.path.join(os.path.expanduser('~'), 'Downloads', '籌碼雷達暫存圖')
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
         
@@ -321,8 +324,11 @@ def run_v8_3_radar():
     import datetime
     import os
     
-    # 建立一個安全的本機資料夾來存放報表（避開 OneDrive）
-    save_dir = r"C:\Temp\籌碼雷達報表"
+    # 建立一個安全的本機資料夾來存放報表（避開 OneDrive，跨平台支援）
+    if os.name == 'nt':  # Windows
+        save_dir = r"C:\Temp\籌碼雷達報表"
+    else:  # Mac / Linux (改存到下載資料夾)
+        save_dir = os.path.join(os.path.expanduser('~'), 'Downloads', '籌碼雷達報表')
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)  # 如果資料夾不存在，就自動建立一個
         
